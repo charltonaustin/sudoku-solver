@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	usage := "path to file if none provided then this will generate a random valid solved board"
+	usage := "path to a file with a sudoku puzzle, if none is provided then this will generate a random valid solved board"
 	filePath := flag.String("file", "", usage)
 	flag.Parse()
 	if *filePath == "" {
