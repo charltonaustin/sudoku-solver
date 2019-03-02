@@ -10,9 +10,9 @@ type Board struct {
 	board []int
 }
 
-func NewBoard() Board {
+func NewBoard() *Board {
 	m := make([]int, 81)
-	return Board{m}
+	return &Board{m}
 }
 
 func (b *Board) Update(x, y, value int) error {
@@ -22,7 +22,7 @@ func (b *Board) Update(x, y, value int) error {
 	if y < 0 || y >= 9 {
 		return errors.New("invalid y")
 	}
-	if value < 1 || value >= 10 {
+	if value < 0 || value >= 10 {
 		return errors.New("invalid value")
 	}
 
@@ -41,28 +41,42 @@ func (b *Board) Get(x, y int) (int, error) {
 
 func (b Board) checkRowsValid() bool {
 	for y := 0; y < 9; y++ {
-		nums := make(map[int]bool)
-		for x := 0; x < 9; x++ {
-			index := (y * 9) + x
-			if nums[b.board[index]] {
-				return false
-			}
-			nums[b.board[index]] = true
+		if !b.CheckRowValid(y) {
+			return false
 		}
+	}
+	return true
+}
+
+func (b Board) CheckRowValid(row int) bool {
+	nums := make(map[int]bool)
+	for x := 0; x < 9; x++ {
+		index := (row * 9) + x
+		if nums[b.board[index]] && b.board[index] != 0 {
+			return false
+		}
+		nums[b.board[index]] = true
 	}
 	return true
 }
 
 func (b Board) checkColumnsValid() bool {
 	for x := 0; x < 9; x++ {
-		nums := make(map[int]bool)
-		for y := 0; y < 9; y++ {
-			index := (y * 9) + x
-			if nums[b.board[index]] {
-				return false
-			}
-			nums[b.board[index]] = true
+		if !b.CheckColumnValid(x) {
+			return false
 		}
+	}
+	return true
+}
+
+func (b Board) CheckColumnValid(column int) bool {
+	nums := make(map[int]bool)
+	for y := 0; y < 9; y++ {
+		index := (y * 9) + column
+		if nums[b.board[index]] && b.board[index] != 0 {
+			return false
+		}
+		nums[b.board[index]] = true
 	}
 	return true
 }
@@ -70,19 +84,30 @@ func (b Board) checkColumnsValid() bool {
 func (b Board) checkValidSections() bool {
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			nums := make(map[int]bool)
-			for y := i * 3; y < i*3+3; y++ {
-				for x := j * 3; x < j*3+3; x++ {
-					index := (y * 9) + x
-					if nums[b.board[index]] {
-						return false
-					}
-					nums[b.board[index]] = true
-				}
+			if !b.CheckValidSection(i, j) {
+				return false
 			}
 		}
 	}
 	return true
+}
+
+func (b Board) CheckValidSection(i, j int) bool {
+	nums := make(map[int]bool)
+	for y := i * 3; y < i*3+3; y++ {
+		for x := j * 3; x < j*3+3; x++ {
+			index := (y * 9) + x
+			if nums[b.board[index]] && b.board[index] != 0 {
+				return false
+			}
+			nums[b.board[index]] = true
+		}
+	}
+	return true
+}
+
+func(b *Board) IsValid()bool {
+	return b.checkRowsValid() && b.checkColumnsValid() && b.checkValidSections()
 }
 
 func (b *Board) String() string {
@@ -91,7 +116,11 @@ func (b *Board) String() string {
 		if i%9 == 0 && i > 0 {
 			sb.WriteString("\n")
 		}
-		sb.WriteString(strconv.Itoa(b.board[i]))
+		value := strconv.Itoa(b.board[i])
+		if value == "0" {
+			value = "_"
+		}
+		sb.WriteString(value)
 		sb.WriteString(" ")
 	}
 	return sb.String()
