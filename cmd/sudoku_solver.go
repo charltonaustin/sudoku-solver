@@ -8,17 +8,17 @@ import (
 )
 
 func main() {
-	b := board.NewBoard()
 	rand.Seed(time.Now().UTC().UnixNano())
-	numbers := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
-	for x := 0; x < 9; x++ {
-		index := rand.Intn(len(numbers))
-		newValue := numbers[index]
-		b.Update(x, 0, newValue)
-		numbers = append(numbers[:index], numbers[index+1:]...)
-	}
+	b := board.NewBoard()
 	backTrace(b)
+	fmt.Println(fmt.Sprintf("is valid: %v", b.IsValid()))
 	fmt.Println(b)
+}
+
+func randomNumbers() []int {
+	numbers := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	rand.Shuffle(len(numbers), func(i, j int) { numbers[i], numbers[j] = numbers[j], numbers[i] })
+	return numbers
 }
 
 func backTrace(b *board.Board) bool {
@@ -29,7 +29,7 @@ func backTrace(b *board.Board) bool {
 				panic(err)
 			}
 			if value == 0 {
-				for number := 1; number < 10; number++ {
+				for _, number := range randomNumbers() {
 					err := b.Update(x, y, number)
 					if err != nil {
 						panic(err)
