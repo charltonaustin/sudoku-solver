@@ -41,14 +41,14 @@ func (b *Board) Get(x, y int) (int, error) {
 
 func (b Board) checkRowsValid() bool {
 	for y := 0; y < 9; y++ {
-		if !b.CheckRowValid(y) {
+		if !b.checkRowValid(y) {
 			return false
 		}
 	}
 	return true
 }
 
-func (b Board) CheckRowValid(row int) bool {
+func (b Board) checkRowValid(row int) bool {
 	nums := make(map[int]bool)
 	for x := 0; x < 9; x++ {
 		index := (row * 9) + x
@@ -62,14 +62,14 @@ func (b Board) CheckRowValid(row int) bool {
 
 func (b Board) checkColumnsValid() bool {
 	for x := 0; x < 9; x++ {
-		if !b.CheckColumnValid(x) {
+		if !b.checkColumnValid(x) {
 			return false
 		}
 	}
 	return true
 }
 
-func (b Board) CheckColumnValid(column int) bool {
+func (b Board) checkColumnValid(column int) bool {
 	nums := make(map[int]bool)
 	for y := 0; y < 9; y++ {
 		index := (y * 9) + column
@@ -84,7 +84,7 @@ func (b Board) CheckColumnValid(column int) bool {
 func (b Board) checkValidSections() bool {
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if !b.CheckValidSection(i, j) {
+			if !b.checkValidSection(i, j) {
 				return false
 			}
 		}
@@ -92,7 +92,7 @@ func (b Board) checkValidSections() bool {
 	return true
 }
 
-func (b Board) CheckValidSection(i, j int) bool {
+func (b Board) checkValidSection(i, j int) bool {
 	nums := make(map[int]bool)
 	for y := i * 3; y < i*3+3; y++ {
 		for x := j * 3; x < j*3+3; x++ {
