@@ -18,7 +18,7 @@ func main() {
 	if *filePath == "" {
 		rand.Seed(time.Now().UTC().UnixNano())
 		b := board.NewBoard()
-		backTrace(b)
+		backtracking(b)
 		fmt.Println(fmt.Sprintf("is valid: %v", b.IsValid()))
 		fmt.Println(b)
 		return
@@ -46,7 +46,7 @@ func main() {
 	}
 	fmt.Println("soving puzzle")
 	fmt.Println(b)
-	backTrace(b)
+	backtracking(b)
 	fmt.Println("solved puzzle")
 	fmt.Println(b)
 
@@ -58,7 +58,7 @@ func randomNumbers() []int {
 	return numbers
 }
 
-func backTrace(b *board.Board) bool {
+func backtracking(b *board.Board) bool {
 	for x := 0; x < 9; x++ {
 		for y := 0; y < 9; y++ {
 			value, err := b.Get(x, y)
@@ -72,7 +72,7 @@ func backTrace(b *board.Board) bool {
 						panic(err)
 					}
 					if b.IsValid() {
-						if backTrace(b) {
+						if backtracking(b) {
 							return true
 						}
 						b.Update(x, y, 0)
